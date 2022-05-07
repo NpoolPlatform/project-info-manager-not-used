@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-info-manager
+  namespace: kube-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: project-info-manager
+  template:
+    metadata:
+      labels:
+        app: project-info-manager
+    spec:
+      containers:
+      - name: project-info-manager
+        image: uhub.service.ucloud.cn/entropypool/project-info-manager:latest
+        imagePullPolicy: Always
+        env:
+        - name: ENV_ENVIRONMENT_TARGET
+          valueFrom:
+            configMapKeyRef:
+              name: system-environment
+              key: environment.target
+        - name: ENV_CONSUL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: system-environment
+              key: environment.consul_host
+        - name: ENV_CONSUL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: system-environment
+              key: environment.consul_port
+        - name: ENV_CLUSTER_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-info-manager
+  namespace: kube-system
+spec:
+  ports:
+  - name: http
+    port: 32700
+    targetPort: 32700
+  - name: grpc
+    port: 32701
+    targetPort: 32701
+  - name: prometheus
+    port: 32702
+    targetPort: 32702
+  selector:
+    app: project-info-manager
