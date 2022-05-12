@@ -1,0 +1,10 @@
+---
+config:
+  hostname: "project-info-manager.npool.top"
+  http_port: 50310
+  grpc_port: 50311
+  healthz_port: 50312
+  appid: "89089012783789789719823798127398"
+  serviceid: "21add0dc-96aa-4af4-b8f3-2ee14545d0c5"
+  logdir: "./"
+  apolloAccessKey: "0147fb70b815403790e8634b899fac07"
