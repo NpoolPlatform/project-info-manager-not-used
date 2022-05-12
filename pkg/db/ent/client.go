@@ -10,7 +10,7 @@ import (
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/migrate"
 	"github.com/google/uuid"
 
-	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/description"
+	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -21,8 +21,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Description is the client for interacting with the Description builders.
-	Description *DescriptionClient
+	// CoinDescription is the client for interacting with the CoinDescription builders.
+	CoinDescription *CoinDescriptionClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,7 +36,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Description = NewDescriptionClient(c.config)
+	c.CoinDescription = NewCoinDescriptionClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -68,9 +68,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		Description: NewDescriptionClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		CoinDescription: NewCoinDescriptionClient(cfg),
 	}, nil
 }
 
@@ -88,16 +88,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		Description: NewDescriptionClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		CoinDescription: NewCoinDescriptionClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Description.
+//		CoinDescription.
 //		Query().
 //		Count(ctx)
 //
@@ -120,87 +120,87 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Description.Use(hooks...)
+	c.CoinDescription.Use(hooks...)
 }
 
-// DescriptionClient is a client for the Description schema.
-type DescriptionClient struct {
+// CoinDescriptionClient is a client for the CoinDescription schema.
+type CoinDescriptionClient struct {
 	config
 }
 
-// NewDescriptionClient returns a client for the Description from the given config.
-func NewDescriptionClient(c config) *DescriptionClient {
-	return &DescriptionClient{config: c}
+// NewCoinDescriptionClient returns a client for the CoinDescription from the given config.
+func NewCoinDescriptionClient(c config) *CoinDescriptionClient {
+	return &CoinDescriptionClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `description.Hooks(f(g(h())))`.
-func (c *DescriptionClient) Use(hooks ...Hook) {
-	c.hooks.Description = append(c.hooks.Description, hooks...)
+// A call to `Use(f, g, h)` equals to `coindescription.Hooks(f(g(h())))`.
+func (c *CoinDescriptionClient) Use(hooks ...Hook) {
+	c.hooks.CoinDescription = append(c.hooks.CoinDescription, hooks...)
 }
 
-// Create returns a create builder for Description.
-func (c *DescriptionClient) Create() *DescriptionCreate {
-	mutation := newDescriptionMutation(c.config, OpCreate)
-	return &DescriptionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for CoinDescription.
+func (c *CoinDescriptionClient) Create() *CoinDescriptionCreate {
+	mutation := newCoinDescriptionMutation(c.config, OpCreate)
+	return &CoinDescriptionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Description entities.
-func (c *DescriptionClient) CreateBulk(builders ...*DescriptionCreate) *DescriptionCreateBulk {
-	return &DescriptionCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of CoinDescription entities.
+func (c *CoinDescriptionClient) CreateBulk(builders ...*CoinDescriptionCreate) *CoinDescriptionCreateBulk {
+	return &CoinDescriptionCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Description.
-func (c *DescriptionClient) Update() *DescriptionUpdate {
-	mutation := newDescriptionMutation(c.config, OpUpdate)
-	return &DescriptionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for CoinDescription.
+func (c *CoinDescriptionClient) Update() *CoinDescriptionUpdate {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdate)
+	return &CoinDescriptionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *DescriptionClient) UpdateOne(d *Description) *DescriptionUpdateOne {
-	mutation := newDescriptionMutation(c.config, OpUpdateOne, withDescription(d))
-	return &DescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CoinDescriptionClient) UpdateOne(cd *CoinDescription) *CoinDescriptionUpdateOne {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdateOne, withCoinDescription(cd))
+	return &CoinDescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *DescriptionClient) UpdateOneID(id uuid.UUID) *DescriptionUpdateOne {
-	mutation := newDescriptionMutation(c.config, OpUpdateOne, withDescriptionID(id))
-	return &DescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CoinDescriptionClient) UpdateOneID(id uuid.UUID) *CoinDescriptionUpdateOne {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdateOne, withCoinDescriptionID(id))
+	return &CoinDescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Description.
-func (c *DescriptionClient) Delete() *DescriptionDelete {
-	mutation := newDescriptionMutation(c.config, OpDelete)
-	return &DescriptionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for CoinDescription.
+func (c *CoinDescriptionClient) Delete() *CoinDescriptionDelete {
+	mutation := newCoinDescriptionMutation(c.config, OpDelete)
+	return &CoinDescriptionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *DescriptionClient) DeleteOne(d *Description) *DescriptionDeleteOne {
-	return c.DeleteOneID(d.ID)
+func (c *CoinDescriptionClient) DeleteOne(cd *CoinDescription) *CoinDescriptionDeleteOne {
+	return c.DeleteOneID(cd.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *DescriptionClient) DeleteOneID(id uuid.UUID) *DescriptionDeleteOne {
-	builder := c.Delete().Where(description.ID(id))
+func (c *CoinDescriptionClient) DeleteOneID(id uuid.UUID) *CoinDescriptionDeleteOne {
+	builder := c.Delete().Where(coindescription.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &DescriptionDeleteOne{builder}
+	return &CoinDescriptionDeleteOne{builder}
 }
 
-// Query returns a query builder for Description.
-func (c *DescriptionClient) Query() *DescriptionQuery {
-	return &DescriptionQuery{
+// Query returns a query builder for CoinDescription.
+func (c *CoinDescriptionClient) Query() *CoinDescriptionQuery {
+	return &CoinDescriptionQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Description entity by its id.
-func (c *DescriptionClient) Get(ctx context.Context, id uuid.UUID) (*Description, error) {
-	return c.Query().Where(description.ID(id)).Only(ctx)
+// Get returns a CoinDescription entity by its id.
+func (c *CoinDescriptionClient) Get(ctx context.Context, id uuid.UUID) (*CoinDescription, error) {
+	return c.Query().Where(coindescription.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *DescriptionClient) GetX(ctx context.Context, id uuid.UUID) *Description {
+func (c *CoinDescriptionClient) GetX(ctx context.Context, id uuid.UUID) *CoinDescription {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -209,7 +209,7 @@ func (c *DescriptionClient) GetX(ctx context.Context, id uuid.UUID) *Description
 }
 
 // Hooks returns the client hooks.
-func (c *DescriptionClient) Hooks() []Hook {
-	hooks := c.hooks.Description
-	return append(hooks[:len(hooks):len(hooks)], description.Hooks[:]...)
+func (c *CoinDescriptionClient) Hooks() []Hook {
+	hooks := c.hooks.CoinDescription
+	return append(hooks[:len(hooks):len(hooks)], coindescription.Hooks[:]...)
 }

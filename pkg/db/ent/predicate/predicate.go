@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Description is the predicate function for description builders.
-type Description func(*sql.Selector)
+// CoinDescription is the predicate function for coindescription builders.
+type CoinDescription func(*sql.Selector)

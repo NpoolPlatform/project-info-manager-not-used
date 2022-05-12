@@ -8,33 +8,27 @@ import (
 )
 
 var (
-	// DescriptionsColumns holds the columns for the "descriptions" table.
-	DescriptionsColumns = []*schema.Column{
+	// CoinDescriptionsColumns holds the columns for the "coin_descriptions" table.
+	CoinDescriptionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "created_at", Type: field.TypeUint32},
-		{Name: "updated_at", Type: field.TypeUint32},
-		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "create_at", Type: field.TypeUint32},
+		{Name: "update_at", Type: field.TypeUint32},
+		{Name: "delete_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID},
 		{Name: "coin_type_id", Type: field.TypeUUID},
 		{Name: "title", Type: field.TypeString},
 		{Name: "message", Type: field.TypeString, Size: 2048},
 		{Name: "used_for", Type: field.TypeString},
 	}
-	// DescriptionsTable holds the schema information for the "descriptions" table.
-	DescriptionsTable = &schema.Table{
-		Name:       "descriptions",
-		Columns:    DescriptionsColumns,
-		PrimaryKey: []*schema.Column{DescriptionsColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "description_coin_type_id_used_for",
-				Unique:  true,
-				Columns: []*schema.Column{DescriptionsColumns[4], DescriptionsColumns[7]},
-			},
-		},
+	// CoinDescriptionsTable holds the schema information for the "coin_descriptions" table.
+	CoinDescriptionsTable = &schema.Table{
+		Name:       "coin_descriptions",
+		Columns:    CoinDescriptionsColumns,
+		PrimaryKey: []*schema.Column{CoinDescriptionsColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		DescriptionsTable,
+		CoinDescriptionsTable,
 	}
 )
 

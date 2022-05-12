@@ -1,5 +1,9 @@
 package constant
 
 const (
-	FieldID = "ID"
+	FieldID                = "ID"
+	CoinDesFieldCoinTypeID = "CoinTypeID"
+	CoinDesFieldTitle      = "Title"
+	CoinDesFieldMessage    = "Message"
+	CoinDesFieldUsedFor    = "UsedFor"
 )

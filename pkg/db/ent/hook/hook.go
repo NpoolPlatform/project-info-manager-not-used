@@ -9,15 +9,15 @@ import (
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent"
 )
 
-// The DescriptionFunc type is an adapter to allow the use of ordinary
-// function as Description mutator.
-type DescriptionFunc func(context.Context, *ent.DescriptionMutation) (ent.Value, error)
+// The CoinDescriptionFunc type is an adapter to allow the use of ordinary
+// function as CoinDescription mutator.
+type CoinDescriptionFunc func(context.Context, *ent.CoinDescriptionMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f DescriptionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.DescriptionMutation)
+func (f CoinDescriptionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CoinDescriptionMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DescriptionMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CoinDescriptionMutation", m)
 	}
 	return f(ctx, mv)
 }

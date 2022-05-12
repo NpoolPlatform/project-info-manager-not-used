@@ -3,26 +3,27 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
+
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/mixin"
 	"github.com/google/uuid"
 )
 
-type Description struct {
+type CoinDescription struct {
 	ent.Schema
 }
 
-func (Description) Mixin() []ent.Mixin {
+func (CoinDescription) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-func (Description) Fields() []ent.Field {
+func (CoinDescription) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
 			Default(uuid.New).
 			Unique(),
+		field.UUID("app_id", uuid.UUID{}),
 		field.UUID("coin_type_id", uuid.UUID{}),
 		field.String("title"),
 		field.String("message").MaxLen(2048),
@@ -30,9 +31,10 @@ func (Description) Fields() []ent.Field {
 	}
 }
 
-func (Description) Indexes() []ent.Index {
+func (CoinDescription) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("coin_type_id", "used_for").
-			Unique(),
+		// justdev
+		// index.Fields("app_id", "used_for").
+		// 	Unique(),
 	}
 }

@@ -28,13 +28,13 @@ func do(ctx context.Context, fn func(_ctx context.Context, cli npool.ProjectInfo
 	return fn(_ctx, cli)
 }
 
-func GetProjectInfoManagerInfoOnly(ctx context.Context, conds cruder.FilterConds) (*npool.CoinDescriptionInfo, error) {
+func GetProjectInfoManagerInfoOnly(ctx context.Context, conds cruder.FilterConds) (*npool.CoinDescription, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.ProjectInfoManagerClient) (cruder.Any, error) {
 		// DO RPC CALL HERE WITH conds PARAMETER
-		return &npool.CoinDescriptionInfo{}, nil
+		return &npool.CoinDescription{}, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail get project info manager : %v", err)
 	}
-	return info.(*npool.CoinDescriptionInfo), nil
+	return info.(*npool.CoinDescription), nil
 }

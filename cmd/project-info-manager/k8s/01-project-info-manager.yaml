@@ -47,13 +47,13 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 32700
-    targetPort: 32700
+    port: 50310
+    targetPort: 50310
   - name: grpc
-    port: 32701
-    targetPort: 32701
+    port: 50311
+    targetPort: 50311
   - name: prometheus
-    port: 32702
-    targetPort: 32702
+    port: 50312
+    targetPort: 50312
   selector:
     app: project-info-manager

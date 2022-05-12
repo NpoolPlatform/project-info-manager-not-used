@@ -165,28 +165,28 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The DescriptionQueryRuleFunc type is an adapter to allow the use of ordinary
+// The CoinDescriptionQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type DescriptionQueryRuleFunc func(context.Context, *ent.DescriptionQuery) error
+type CoinDescriptionQueryRuleFunc func(context.Context, *ent.CoinDescriptionQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f DescriptionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.DescriptionQuery); ok {
+func (f CoinDescriptionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CoinDescriptionQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.DescriptionQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CoinDescriptionQuery", q)
 }
 
-// The DescriptionMutationRuleFunc type is an adapter to allow the use of ordinary
+// The CoinDescriptionMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type DescriptionMutationRuleFunc func(context.Context, *ent.DescriptionMutation) error
+type CoinDescriptionMutationRuleFunc func(context.Context, *ent.CoinDescriptionMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f DescriptionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.DescriptionMutation); ok {
+func (f CoinDescriptionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CoinDescriptionMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DescriptionMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CoinDescriptionMutation", m)
 }
 
 type (
@@ -224,7 +224,7 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
-	case *ent.DescriptionQuery:
+	case *ent.CoinDescriptionQuery:
 		return q.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected query type %T for query filter", q)
@@ -233,7 +233,7 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
-	case *ent.DescriptionMutation:
+	case *ent.CoinDescriptionMutation:
 		return m.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected mutation type %T for mutation filter", m)
