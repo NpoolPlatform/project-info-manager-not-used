@@ -70,6 +70,11 @@ github.com/NpoolPlatform/go-service-framework v0.0.0-20220120091626-4e8035637592
 github.com/NpoolPlatform/go-service-framework v0.0.0-20220120091626-4e8035637592/go.mod h1:JqrktA7gNQe/Uprnr6DCs5UCFpheCZ30lDd0OkyRtC4=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20220501160538-4d73846f01f1 h1:/S5KZfI5Y7joufQswgNwbs8AOM8Yexbhh6X31XNO+AE=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20220501160538-4d73846f01f1/go.mod h1:zvvqlRwbOdTUauPQ9dFDhDuxa91ILV0CQfVdPBZj+eA=
+github.com/NpoolPlatform/message v0.0.0-20220120075427-38182760a780/go.mod h1:tnsf7zHQ5Mv2uG0ezOwCfm/bxluiRW10DeuIl4SjG4Y=
+github.com/NpoolPlatform/message v0.0.0-20220121040326-31d316062cdc/go.mod h1:tnsf7zHQ5Mv2uG0ezOwCfm/bxluiRW10DeuIl4SjG4Y=
+github.com/NpoolPlatform/message v0.0.0-20220501030927-34f296682c0c/go.mod h1:i/F/sQWjQk44RGvfgEB0zH0oAK/0qLvgJ1AsJDZQDkk=
+github.com/NpoolPlatform/message v0.0.0-20220512032534-cb26ec191f1a h1:2XvCY6W6zzqMC8B14m3k8cBzc6MmrIiS5/CO3qWEaaM=
+github.com/NpoolPlatform/message v0.0.0-20220512032534-cb26ec191f1a/go.mod h1:i/F/sQWjQk44RGvfgEB0zH0oAK/0qLvgJ1AsJDZQDkk=
 github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/Shonminh/apollo-client v0.4.0 h1:AXGp4wOahrEKjheMXehgsG9B8dEfLQHttRLHeEefvus=
@@ -693,6 +698,7 @@ golang.org/x/net v0.0.0-20210614182718-04defd469f4e/go.mod h1:9nx3DQGgdP8bBQD5qx
 golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/net v0.0.0-20211029224645-99673261e6eb/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd h1:O7DYs+zxREGLKzKoMQrtrEacpb0ZVXA5rIwylE2Xchk=
 golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd/go.mod h1:CfG3xpIq0wQ8r1q4Su4UZFWDARRcnwPjda9FqA0JpMk=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
@@ -987,6 +993,7 @@ google.golang.org/genproto v0.0.0-20211129164237-f09f9a12af12/go.mod h1:5CzLGKJ6
 google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
 google.golang.org/genproto v0.0.0-20211206160659-862468c7d6e0/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
 google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
+google.golang.org/genproto v0.0.0-20220114231437-d2e6a121cae0/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
 google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a h1:uqouglH745GoGeZ1YFZbPBiu961tgi/9Qm5jaorajjQ=
 google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a/go.mod h1:kGP+zUP2Ddo0ayMi4YuN7C3WZyJvGLZRh8Z5wnAqvEI=
 google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0/go.mod h1:6Kw0yEErY5E/yWrBtf03jp27GLLJujG4z/JK95pnjjw=
