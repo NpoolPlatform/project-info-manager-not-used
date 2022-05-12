@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	_ "github.com/NpoolPlatform/go-service-framework/pkg/version"
+	"github.com/go-resty/resty/v2"
+	"github.com/test-go/testify/assert"
 )
 
 func TestVersion(t *testing.T) {
@@ -13,14 +15,8 @@ func TestVersion(t *testing.T) {
 		return
 	}
 
-	// cli := resty.New()
-	// resp, err := cli.R().
-	// 	Post("http://localhost:50310/version")
-	// if assert.Nil(t, err) {
-	// 	assert.Equal(t, 200, resp.StatusCode())
-	// 	// we should compare body, but we cannot do here
-	// 	_, err := version.GetVersion()
-	// 	assert.NotNil(t, err)
-	// 	assert.Equal(t, ver, string(resp.Body()))
-	// }
+	cli := resty.New()
+	_, err := cli.R().
+		Post("http://localhost:50310/version")
+	assert.Nil(t, err)
 }

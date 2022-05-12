@@ -3,8 +3,8 @@ package version
 import (
 	npool "github.com/NpoolPlatform/message/npool"
 
-	logger "github.com/NpoolPlatform/go-service-framework/pkg/logger" //nolint
-	cv "github.com/NpoolPlatform/go-service-framework/pkg/version"    //nolint
+	logger "github.com/NpoolPlatform/go-service-framework/pkg/logger"
+	cv "github.com/NpoolPlatform/go-service-framework/pkg/version"
 
 	"golang.org/x/xerrors"
 )

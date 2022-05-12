@@ -1,6 +1,11 @@
 FROM jrei/systemd-centos:7
 
-COPY ProjectInfoManager.viper.yaml /etc/ProjectInfoManager/ProjectInfoManager.viper.yaml
-COPY project-info-manager /usr/local/bin/project-info-manager
+WORKDIR /app
 
-CMD ["project-info-manager", "run"]
+COPY project-info-manager /app
+
+ENTRYPOINT ["project-info-manager"]
+
+EXPOSE 50310 50311 50312
+
+CMD ["run"]

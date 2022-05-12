@@ -19,6 +19,7 @@ func (CoinDescription) Mixin() []ent.Mixin {
 }
 
 func (CoinDescription) Fields() []ent.Field {
+	const MessageMaxLen = 2048
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
 			Default(uuid.New).
@@ -26,7 +27,7 @@ func (CoinDescription) Fields() []ent.Field {
 		field.UUID("app_id", uuid.UUID{}),
 		field.UUID("coin_type_id", uuid.UUID{}),
 		field.String("title"),
-		field.String("message").MaxLen(2048),
+		field.String("message").MaxLen(MessageMaxLen),
 		field.String("used_for"),
 	}
 }

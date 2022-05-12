@@ -3,9 +3,6 @@ package db
 import (
 	"context"
 	"fmt"
-	"time"
-
-	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent"
 
@@ -13,7 +10,7 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/go-service-framework/pkg/mysql"
 
-	_ "github.com/NpoolPlatform/project-info-manager/pkg/db/ent/runtime" //nolint
+	_ "github.com/NpoolPlatform/project-info-manager/pkg/db/ent/runtime"
 )
 
 func client() (*ent.Client, error) {
@@ -38,35 +35,27 @@ func Client() (*ent.Client, error) {
 }
 
 func WithTx(ctx context.Context, tx *ent.Tx, fn func(ctx context.Context) error) error {
+	succ := false
 	defer func() {
-		if v := recover(); v != nil {
+		if !succ {
 			err := tx.Rollback()
 			if err != nil {
-				logger.Sugar().Errorf("fail to rollback: %v", err)
+				return
 			}
-			panic(v)
 		}
 	}()
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	if err := fn(ctx); err != nil {
-		if rerr := tx.Rollback(); rerr != nil {
-			err = fmt.Errorf("rolling back transaction: %v (%v)", err, rerr)
-		}
 		return err
 	}
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("committing transaction: %v", err)
 	}
+	succ = true
 	return nil
 }
 
 func Do(ctx context.Context, fn func(ctx context.Context, cli *ent.Client) error) error {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	cli, err := Client()
 	if err != nil {
 		return fmt.Errorf("fail get db client: %v", err)

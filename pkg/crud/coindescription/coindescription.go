@@ -160,7 +160,7 @@ func (s *CoinDescription) Rows(ctx context.Context, conds cruder.Conds, offset, 
 	return infos, total, nil
 }
 
-func (s *CoinDescription) queryFromConds(conds cruder.Conds) (*ent.CoinDescriptionQuery, error) { //nolint
+func (s *CoinDescription) queryFromConds(conds cruder.Conds) (*ent.CoinDescriptionQuery, error) {
 	stm := s.Tx.CoinDescription.Query()
 	for k, v := range conds {
 		switch k {

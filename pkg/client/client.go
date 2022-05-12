@@ -14,7 +14,8 @@ import (
 )
 
 func do(ctx context.Context, fn func(_ctx context.Context, cli npool.ProjectInfoManagerClient) (cruder.Any, error)) (cruder.Any, error) {
-	_ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	const CtxTimeoutSecond = 10
+	_ctx, cancel := context.WithTimeout(ctx, CtxTimeoutSecond*time.Second)
 	defer cancel()
 
 	conn, err := grpc2.GetGRPCConn(constant.ServiceName, grpc2.GRPCTAG)
