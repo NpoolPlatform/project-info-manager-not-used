@@ -41,6 +41,7 @@ var description1 = npool.CoinDescription{
 	Message:    "test_message1",
 	UsedFor:    "test_usedfor1",
 }
+
 var description2 = npool.CoinDescription{
 	AppID:      uuid.New().String(),
 	CoinTypeID: uuid.New().String(),
@@ -50,7 +51,9 @@ var description2 = npool.CoinDescription{
 }
 
 func TestCreate(t *testing.T) {
-
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
 	schema, err := New(context.Background(), nil)
 	assert.Nil(t, err)
 
@@ -74,6 +77,9 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
 	schema, err := New(context.Background(), nil)
 	assert.Nil(t, err)
 
@@ -96,6 +102,9 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
 	schema, err := New(context.Background(), nil)
 	assert.Nil(t, err)
 
@@ -137,6 +146,9 @@ func TestGet(t *testing.T) {
 }
 
 func TestCount(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
 	schema, err := New(context.Background(), nil)
 	assert.Nil(t, err)
 
@@ -160,6 +172,9 @@ func TestCount(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
 	schema, err := New(context.Background(), nil)
 	assert.Nil(t, err)
 

@@ -34,6 +34,7 @@ func (TimeMixin) Fields() []ent.Field {
 			}),
 	}
 }
+
 func (TimeMixin) Policy() ent.Policy {
 	return privacy.Policy{
 		Query: privacy.QueryPolicy{

@@ -212,10 +212,7 @@ func (s *Server) GetCoinDescription(ctx context.Context, in *npool.GetCoinDescri
 		return &npool.GetCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	newConds := cruder.NewConds()
-	newConds.WithCond(constant.FieldID, cruder.EQ, in.GetID())
-	newConds.WithCond(constant.FieldAppID, cruder.EQ, in.GetAppID())
-	info, err := schema.RowOnly(ctx, newConds)
+	info, err := schema.Row(ctx, uuid.MustParse(in.GetID()))
 	if err != nil {
 		logger.Sugar().Errorf("fail get description: %v", err)
 		return &npool.GetCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
@@ -252,10 +249,7 @@ func (s *Server) GetAppCoinDescription(ctx context.Context, in *npool.GetAppCoin
 		logger.Sugar().Errorf("fail create schema entity: %v", err)
 		return &npool.GetAppCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	newConds := cruder.NewConds()
-	newConds.WithCond(constant.FieldID, cruder.EQ, in.GetID())
-	newConds.WithCond(constant.FieldAppID, cruder.EQ, in.GetTargetAppID())
-	info, err := schema.RowOnly(ctx, newConds)
+	info, err := schema.Row(ctx, uuid.MustParse(in.GetID()))
 	if err != nil {
 		logger.Sugar().Errorf("fail get description: %v", err)
 		return &npool.GetAppCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
