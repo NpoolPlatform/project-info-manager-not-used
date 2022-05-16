@@ -68,8 +68,6 @@ github.com/NpoolPlatform/api-manager v0.0.0-20220121051827-18c807c114dc h1:JFUaq
 github.com/NpoolPlatform/api-manager v0.0.0-20220121051827-18c807c114dc/go.mod h1:ubnvHuhc0o6drhdYrT+nM5DXZW/yEesObWky6oRsHoQ=
 github.com/NpoolPlatform/go-service-framework v0.0.0-20220120091626-4e8035637592 h1:fsYAxdFmjSWMW+uoSmXC7YcG9QGdqiC/P1cnvCt1XTo=
 github.com/NpoolPlatform/go-service-framework v0.0.0-20220120091626-4e8035637592/go.mod h1:JqrktA7gNQe/Uprnr6DCs5UCFpheCZ30lDd0OkyRtC4=
-github.com/NpoolPlatform/libent-cruder v0.0.0-20220501160538-4d73846f01f1 h1:/S5KZfI5Y7joufQswgNwbs8AOM8Yexbhh6X31XNO+AE=
-github.com/NpoolPlatform/libent-cruder v0.0.0-20220501160538-4d73846f01f1/go.mod h1:zvvqlRwbOdTUauPQ9dFDhDuxa91ILV0CQfVdPBZj+eA=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20220516071113-a13e447a48a9 h1:03n0Q69QbLuTLTGmnmBBJ0ItRhIXx2rNfR6FDmkWHzk=
 github.com/NpoolPlatform/libent-cruder v0.0.0-20220516071113-a13e447a48a9/go.mod h1:zvvqlRwbOdTUauPQ9dFDhDuxa91ILV0CQfVdPBZj+eA=
 github.com/NpoolPlatform/message v0.0.0-20220120075427-38182760a780/go.mod h1:tnsf7zHQ5Mv2uG0ezOwCfm/bxluiRW10DeuIl4SjG4Y=
