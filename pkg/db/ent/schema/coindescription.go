@@ -34,8 +34,8 @@ func (CoinDescription) Fields() []ent.Field {
 
 func (CoinDescription) Indexes() []ent.Index {
 	return []ent.Index{
-		// justdev
-		// index.Fields("app_id", "used_for").
+		// have no index
+		// index.Fields().
 		// 	Unique(),
 	}
 }

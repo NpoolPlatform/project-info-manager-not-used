@@ -1,3 +1,4 @@
+//nolint
 package api
 
 import (
@@ -7,15 +8,19 @@ import (
 	"strconv"
 	"testing"
 
-	npool "github.com/NpoolPlatform/message/npool/project-info-manager"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	npool "github.com/NpoolPlatform/message/npool/projectinfomgr"
+	constant "github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
+	testinit "github.com/NpoolPlatform/project-info-manager/pkg/test-init"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 var appid = uuid.NewString()
 
-var description = npool.CoinDescriptionBase{
+var description = npool.CoinDescription{
 	AppID:      appid,
 	CoinTypeID: uuid.NewString(),
 	Message:    "test_message",
@@ -23,7 +28,7 @@ var description = npool.CoinDescriptionBase{
 	UsedFor:    "test_usedfor",
 }
 
-var description1 = npool.CoinDescriptionBase{
+var description1 = npool.CoinDescription{
 	AppID:      appid,
 	CoinTypeID: uuid.NewString(),
 	Message:    "test_message1",
@@ -31,7 +36,7 @@ var description1 = npool.CoinDescriptionBase{
 	UsedFor:    "test_usedfor1",
 }
 
-var description2 = npool.CoinDescriptionBase{
+var description2 = npool.CoinDescription{
 	AppID:      appid,
 	CoinTypeID: uuid.NewString(),
 	Message:    "test_message2",
@@ -52,6 +57,15 @@ func httpReq(in interface{}, url string, t *testing.T) *resty.Response {
 	return nil
 }
 
+func init() {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+	if err := testinit.Init(); err != nil {
+		fmt.Printf("cannot init test stub: %v\n", err)
+	}
+}
+
 func CreateOne(t *testing.T) npool.CoinDescription {
 	ret := npool.CreateCoinDescriptionResponse{}
 	resp := httpReq(npool.CreateCoinDescriptionRequest{
@@ -62,10 +76,11 @@ func CreateOne(t *testing.T) npool.CoinDescription {
 	return *ret.GetInfo()
 }
 
-func CreateMany(t *testing.T, infos []*npool.CoinDescriptionBase) []*npool.CoinDescription {
+func CreateMany(t *testing.T, appid string, infos []*npool.CoinDescription) []*npool.CoinDescription {
 	info := npool.CreateCoinDescriptionsResponse{}
 	resp := httpReq(npool.CreateCoinDescriptionsRequest{
 		Infos: infos,
+		AppID: appid,
 	}, "/v1/create/coin/descriptions", t)
 	err := json.Unmarshal(resp.Body(), &info)
 	assert.Nil(t, err)
@@ -92,7 +107,8 @@ func TestCreateCoinDescriptions(t *testing.T) {
 
 	info := npool.CreateCoinDescriptionsResponse{}
 	resp := httpReq(npool.CreateCoinDescriptionsRequest{
-		Infos: []*npool.CoinDescriptionBase{
+		AppID: uuid.NewString(),
+		Infos: []*npool.CoinDescription{
 			&description,
 			&description1,
 			&description2,
@@ -103,40 +119,53 @@ func TestCreateCoinDescriptions(t *testing.T) {
 	assert.Equal(t, len(info.GetInfos()), 3)
 }
 
+func TestCreateAppCoinDescription(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+	ret := npool.CreateAppCoinDescriptionResponse{}
+	resp := httpReq(npool.CreateAppCoinDescriptionRequest{
+		Info: &description,
+	}, "/v1/create/app/coin/description", t)
+	err := json.Unmarshal(resp.Body(), &ret)
+	assert.Nil(t, err)
+	assert.Equal(t, ret.GetInfo().GetCoinTypeID(), description.GetCoinTypeID())
+}
+
+func TestCreateAppCoinDescriptions(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+
+	info := npool.CreateAppCoinDescriptionsResponse{}
+	resp := httpReq(npool.CreateAppCoinDescriptionsRequest{
+		TargetAppID: uuid.NewString(),
+		Infos: []*npool.CoinDescription{
+			&description,
+			&description1,
+			&description2,
+		},
+	}, "/v1/create/app/coin/descriptions", t)
+	err := json.Unmarshal(resp.Body(), &info)
+	assert.Nil(t, err)
+	assert.Equal(t, len(info.GetInfos()), 3)
+}
+
 func TestUpdateCoinDescription(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
 	cInfo := CreateOne(t)
-	upMsg := "yep"
+	upMsg := uuid.NewString()
 	cInfo.Message = upMsg
 
 	info := npool.UpdateCoinDescriptionResponse{}
 	resp := httpReq(npool.UpdateCoinDescriptionRequest{
-		AppID: cInfo.GetAppID(),
-		Info:  &cInfo,
+		Info: &cInfo,
 	}, "/v1/update/coin/description", t)
 	err := json.Unmarshal(resp.Body(), &info)
 	assert.Nil(t, err)
 	assert.Equal(t, info.GetInfo().GetMessage(), upMsg)
-}
-
-func TestUpdateAppCoinDescription(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	info := CreateOne(t)
-	upMsg := "yep"
-	info.Message = upMsg
-
-	upInfo := npool.UpdateAppCoinDescriptionResponse{}
-	resp := httpReq(npool.UpdateAppCoinDescriptionRequest{
-		TargetAppID: info.GetAppID(),
-		Info:        &info,
-	}, "/v1/update/app/coin/description", t)
-	err := json.Unmarshal(resp.Body(), &upInfo)
-	assert.Nil(t, err)
-	assert.Equal(t, upInfo.GetInfo().GetMessage(), upMsg)
 }
 
 func TestGetCoinDescription(t *testing.T) {
@@ -147,12 +176,68 @@ func TestGetCoinDescription(t *testing.T) {
 
 	getInfo := npool.GetCoinDescriptionResponse{}
 	resp := httpReq(npool.GetCoinDescriptionRequest{
-		AppID: info.GetAppID(),
-		ID:    info.GetID(),
+		ID: info.GetID(),
 	}, "/v1/get/coin/description", t)
 	err := json.Unmarshal(resp.Body(), &getInfo)
 	assert.Nil(t, err)
 	assert.Equal(t, getInfo.GetInfo().GetID(), info.GetID())
+}
+
+func TestGetCoinDescriptions(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+	rmsg := uuid.NewString()
+	description.Message = rmsg
+	description1.Message = rmsg
+	description2.Message = rmsg
+	d1 := []*npool.CoinDescription{
+		&description,
+		&description1,
+		&description2,
+	}
+	CreateMany(t, appid, d1)
+
+	getInfos := npool.GetCoinDescriptionsResponse{}
+	conds := cruder.NewFilterConds()
+	conds.WithCond(constant.FieldMessage, cruder.EQ, structpb.NewStringValue(rmsg))
+
+	resp := httpReq(npool.GetCoinDescriptionsRequest{
+		AppID:  description.AppID,
+		Conds:  conds,
+		Offset: 0,
+		Limit:  5,
+	}, "/v1/get/coin/descriptions", t)
+	err := json.Unmarshal(resp.Body(), &getInfos)
+	assert.Nil(t, err)
+	assert.Equal(t, getInfos.GetTotal(), int32(3))
+}
+
+func TestGetCoinDescriptionOnly(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+	rmsg := uuid.NewString()
+	description.Message = rmsg
+	description1.Message = rmsg
+	rmsg1 := uuid.NewString()
+	description2.Message = rmsg1
+	d1 := []*npool.CoinDescription{
+		&description,
+		&description1,
+		&description2,
+	}
+	CreateMany(t, appid, d1)
+	conds := cruder.NewFilterConds()
+	conds.WithCond(constant.FieldMessage, cruder.EQ, structpb.NewStringValue(rmsg1))
+	getInfo := npool.GetCoinDescriptionOnlyResponse{}
+	resp := httpReq(npool.GetCoinDescriptionOnlyRequest{
+		AppID: description.AppID,
+		Conds: conds,
+	}, "/v1/get/coin/description/only", t)
+	err := json.Unmarshal(resp.Body(), &getInfo)
+	assert.Nil(t, err)
+	assert.Equal(t, getInfo.GetInfo().GetMessage(), description2.Message)
 }
 
 func TestGetAppCoinDescription(t *testing.T) {
@@ -163,58 +248,35 @@ func TestGetAppCoinDescription(t *testing.T) {
 
 	getInfo := npool.GetAppCoinDescriptionResponse{}
 	resp := httpReq(npool.GetAppCoinDescriptionRequest{
-		TargetAppID: info.GetAppID(),
-		ID:          info.GetID(),
+		ID: info.GetID(),
 	}, "/v1/get/app/coin/description", t)
 	err := json.Unmarshal(resp.Body(), &getInfo)
 	assert.Nil(t, err)
 	assert.Equal(t, getInfo.GetInfo().GetID(), info.GetID())
 }
 
-func TestGetCoinDescriptions(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	appid := uuid.NewString()
-	description.AppID = appid
-	description1.AppID = appid
-	description2.AppID = appid
-	d1 := []*npool.CoinDescriptionBase{
-		&description,
-		&description1,
-		&description2,
-	}
-	CreateMany(t, d1)
-
-	getInfos := npool.GetCoinDescriptionsResponse{}
-	resp := httpReq(npool.GetCoinDescriptionsRequest{
-		AppID:  appid,
-		Offset: 0,
-		Limit:  5,
-	}, "/v1/get/coin/descriptions", t)
-	err := json.Unmarshal(resp.Body(), &getInfos)
-	assert.Nil(t, err)
-	assert.Equal(t, getInfos.GetTotal(), int32(3))
-}
-
 func TestGetAppCoinDescriptions(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-	appid := uuid.NewString()
-	description.AppID = appid
-	description1.AppID = appid
-	description2.AppID = appid
-	d1 := []*npool.CoinDescriptionBase{
+	rmsg := uuid.NewString()
+	description.Message = rmsg
+	description1.Message = rmsg
+	description2.Message = rmsg
+	d1 := []*npool.CoinDescription{
 		&description,
 		&description1,
 		&description2,
 	}
-	CreateMany(t, d1)
+	CreateMany(t, appid, d1)
 
 	getInfos := npool.GetAppCoinDescriptionsResponse{}
+	conds := cruder.NewFilterConds()
+	conds.WithCond(constant.FieldMessage, cruder.EQ, structpb.NewStringValue(rmsg))
+
 	resp := httpReq(npool.GetAppCoinDescriptionsRequest{
-		TargetAppID: appid,
+		TargetAppID: description.AppID,
+		Conds:       conds,
 		Offset:      0,
 		Limit:       5,
 	}, "/v1/get/app/coin/descriptions", t)
@@ -223,52 +285,31 @@ func TestGetAppCoinDescriptions(t *testing.T) {
 	assert.Equal(t, getInfos.GetTotal(), int32(3))
 }
 
-func TestCountCoinDescriptions(t *testing.T) {
+func TestGetAppCoinDescriptionOnly(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-	appid := uuid.NewString()
-	description.AppID = appid
-	description1.AppID = appid
-	description2.AppID = appid
-	d1 := []*npool.CoinDescriptionBase{
+	rmsg := uuid.NewString()
+	description.Message = rmsg
+	description1.Message = rmsg
+	rmsg1 := uuid.NewString()
+	description2.Message = rmsg1
+	d1 := []*npool.CoinDescription{
 		&description,
 		&description1,
 		&description2,
 	}
-	CreateMany(t, d1)
-
-	getInfos := npool.CountCoinDescriptionsResponse{}
-	resp := httpReq(npool.CountCoinDescriptionsRequest{
-		AppID: appid,
-	}, "/v1/count/coin/descriptions", t)
-	err := json.Unmarshal(resp.Body(), &getInfos)
+	CreateMany(t, appid, d1)
+	conds := cruder.NewFilterConds()
+	conds.WithCond(constant.FieldMessage, cruder.EQ, structpb.NewStringValue(rmsg1))
+	getInfo := npool.GetCoinDescriptionOnlyResponse{}
+	resp := httpReq(npool.GetAppCoinDescriptionOnlyRequest{
+		TargetAppID: description.AppID,
+		Conds:       conds,
+	}, "/v1/get/app/coin/description/only", t)
+	err := json.Unmarshal(resp.Body(), &getInfo)
 	assert.Nil(t, err)
-	assert.Equal(t, getInfos.GetResult(), uint32(3))
-}
-
-func TestCountAppCoinDescriptions(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	appid := uuid.NewString()
-	description.AppID = appid
-	description1.AppID = appid
-	description2.AppID = appid
-	d1 := []*npool.CoinDescriptionBase{
-		&description,
-		&description1,
-		&description2,
-	}
-	CreateMany(t, d1)
-
-	getInfos := npool.CountAppCoinDescriptionsResponse{}
-	resp := httpReq(npool.CountAppCoinDescriptionsRequest{
-		TargetAppID: appid,
-	}, "/v1/count/app/coin/descriptions", t)
-	err := json.Unmarshal(resp.Body(), &getInfos)
-	assert.Nil(t, err)
-	assert.Equal(t, getInfos.GetResult(), uint32(3))
+	assert.Equal(t, getInfo.GetInfo().GetMessage(), description2.Message)
 }
 
 func TestDeleteAppCoinDescription(t *testing.T) {
@@ -278,21 +319,26 @@ func TestDeleteAppCoinDescription(t *testing.T) {
 	appid := uuid.NewString()
 	description.AppID = appid
 
-	cInfos := CreateMany(t, []*npool.CoinDescriptionBase{&description})
+	cInfos := CreateMany(t, appid, []*npool.CoinDescription{&description})
 
-	delInfo := npool.DeleteAppCoinDescriptionResponse{}
-	resp := httpReq(npool.DeleteAppCoinDescriptionRequest{
-		TargetAppID: appid,
-		ID:          cInfos[0].GetID(),
-	}, "/v1/delete/app/coin/description", t)
+	delInfo := npool.DeleteCoinDescriptionResponse{}
+	resp := httpReq(npool.DeleteCoinDescriptionRequest{
+		ID: cInfos[0].GetID(),
+	}, "/v1/delete/coin/description", t)
 	err := json.Unmarshal(resp.Body(), &delInfo)
 	assert.Nil(t, err)
 
-	ret := npool.CountAppCoinDescriptionsResponse{}
-	resp = httpReq(npool.CountAppCoinDescriptionsRequest{
-		TargetAppID: appid,
-	}, "/v1/count/app/coin/descriptions", t)
-	err = json.Unmarshal(resp.Body(), &ret)
+	conds := cruder.NewFilterConds()
+	conds.WithCond(constant.FieldAppID, cruder.EQ, structpb.NewStringValue(appid))
+
+	getInfos := npool.GetCoinDescriptionsResponse{}
+	resp = httpReq(npool.GetCoinDescriptionsRequest{
+		AppID:  description.AppID,
+		Conds:  conds,
+		Offset: 0,
+		Limit:  5,
+	}, "/v1/get/coin/descriptions", t)
+	err = json.Unmarshal(resp.Body(), &getInfos)
 	assert.Nil(t, err)
-	assert.Equal(t, ret.GetResult(), uint32(0))
+	assert.Equal(t, getInfos.GetTotal(), int32(0))
 }

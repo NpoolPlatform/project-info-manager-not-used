@@ -2,13 +2,15 @@ package coindescription
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 	"testing"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/project-info-manager"
+	npool "github.com/NpoolPlatform/message/npool/projectinfomgr"
 	constant "github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
+	testinit "github.com/NpoolPlatform/project-info-manager/pkg/test-init"
 
 	"github.com/google/uuid"
 
@@ -37,6 +39,16 @@ var description2 = npool.CoinDescription{
 	Title:      "test_title2",
 	Message:    "test_message2",
 	UsedFor:    "test_usedfor2",
+}
+
+//nolint
+func init() {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+	if err := testinit.Init(); err != nil {
+		fmt.Printf("cannot init test stub: %v\n", err)
+	}
 }
 
 func TestCreate(t *testing.T) {

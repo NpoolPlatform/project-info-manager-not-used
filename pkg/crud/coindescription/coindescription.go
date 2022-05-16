@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/project-info-manager"
+	npool "github.com/NpoolPlatform/message/npool/projectinfomgr"
 	"github.com/NpoolPlatform/project-info-manager/pkg/db"
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent"
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
@@ -100,7 +100,7 @@ func (s *CoinDescription) Row(ctx context.Context, id uuid.UUID) (*npool.CoinDes
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("fail get description: %v", err)
+		return nil, fmt.Errorf("fail get Description: %v", err)
 	}
 
 	return s.rowToObject(info), nil
@@ -167,29 +167,41 @@ func (s *CoinDescription) queryFromConds(conds cruder.Conds) (*ent.CoinDescripti
 		case coindescription.FieldID:
 			id, err := cruder.AnyTypeUUID(v.Val)
 			if err != nil {
-				return nil, fmt.Errorf("invalid id: %v", err)
+				return nil, fmt.Errorf("invalid ID: %v", err)
 			}
 			stm = stm.Where(coindescription.ID(id))
 		case coindescription.FieldAppID:
 			id, err := cruder.AnyTypeUUID(v.Val)
 			if err != nil {
-				return nil, fmt.Errorf("invalid app id: %v", err)
+				return nil, fmt.Errorf("invalid AppID: %v", err)
 			}
 			stm = stm.Where(coindescription.AppID(id))
 		case coindescription.FieldCoinTypeID:
-			id, err := cruder.AnyTypeUUID(v.Val)
+			cointypeid, err := cruder.AnyTypeUUID(v.Val)
 			if err != nil {
-				return nil, fmt.Errorf("invalid cointype id: %v", err)
+				return nil, fmt.Errorf("invalid cointypeid: %v", err)
 			}
-			stm = stm.Where(coindescription.CoinTypeID(id))
+			stm = stm.Where(coindescription.CoinTypeID(cointypeid))
 		case coindescription.FieldUsedFor:
-			stm = stm.Where(coindescription.Title(v.Val.(string)))
+			usedfor, err := cruder.AnyTypeString(v.Val)
+			if err != nil {
+				return nil, fmt.Errorf("invalid UsedFor: %v", err)
+			}
+			stm = stm.Where(coindescription.UsedFor(usedfor))
 		case coindescription.FieldMessage:
-			stm = stm.Where(coindescription.Title(v.Val.(string)))
+			message, err := cruder.AnyTypeString(v.Val)
+			if err != nil {
+				return nil, fmt.Errorf("invalid Message: %v", err)
+			}
+			stm = stm.Where(coindescription.Message(message))
 		case coindescription.FieldTitle:
-			stm = stm.Where(coindescription.Title(v.Val.(string)))
+			title, err := cruder.AnyTypeString(v.Val)
+			if err != nil {
+				return nil, fmt.Errorf("invalid Title: %v", err)
+			}
+			stm = stm.Where(coindescription.Title(title))
 		default:
-			return nil, fmt.Errorf("invalid coin description field")
+			return nil, fmt.Errorf("invalid CoinDescription field")
 		}
 	}
 

@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	npool "github.com/NpoolPlatform/message/npool/project-info-manager"
+	npool "github.com/NpoolPlatform/message/npool/projectinfomgr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

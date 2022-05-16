@@ -40,13 +40,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-    volumes:
-      - name: service-config
-        configMap:
-          name: project-info-manager-config
-          items:
-            - key: service-conf
-              path: ProjectInfoManager.viper.yaml
+      volumes:
+        - name: service-config
+          configMap:
+            name: project-info-manager-config
+            items:
+              - key: service-conf
+                path: ProjectInfoManager.viper.yaml
 ---
 apiVersion: v1
 kind: Service
