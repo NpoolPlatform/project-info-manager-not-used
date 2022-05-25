@@ -125,7 +125,8 @@ func TestCreateAppCoinDescription(t *testing.T) {
 	}
 	ret := npool.CreateAppCoinDescriptionResponse{}
 	resp := httpReq(npool.CreateAppCoinDescriptionRequest{
-		Info: &description,
+		Info:        &description,
+		TargetAppID: description.AppID,
 	}, "/v1/create/app/coin/description", t)
 	err := json.Unmarshal(resp.Body(), &ret)
 	assert.Nil(t, err)
@@ -238,21 +239,6 @@ func TestGetCoinDescriptionOnly(t *testing.T) {
 	err := json.Unmarshal(resp.Body(), &getInfo)
 	assert.Nil(t, err)
 	assert.Equal(t, getInfo.GetInfo().GetMessage(), description2.Message)
-}
-
-func TestGetAppCoinDescription(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	info := CreateOne(t)
-
-	getInfo := npool.GetAppCoinDescriptionResponse{}
-	resp := httpReq(npool.GetAppCoinDescriptionRequest{
-		ID: info.GetID(),
-	}, "/v1/get/app/coin/description", t)
-	err := json.Unmarshal(resp.Body(), &getInfo)
-	assert.Nil(t, err)
-	assert.Equal(t, getInfo.GetInfo().GetID(), info.GetID())
 }
 
 func TestGetAppCoinDescriptions(t *testing.T) {

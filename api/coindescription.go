@@ -89,6 +89,12 @@ func (s *Server) CreateCoinDescription(ctx context.Context, in *npool.CreateCoin
 }
 
 func (s *Server) CreateCoinDescriptions(ctx context.Context, in *npool.CreateCoinDescriptionsRequest) (*npool.CreateCoinDescriptionsResponse, error) {
+	_, err := uuid.Parse(in.GetAppID())
+	if err != nil {
+		logger.Sugar().Errorf("parse AppID: %s invalid", in.GetAppID())
+		return nil, status.Error(codes.InvalidArgument, "AppID invalid")
+	}
+
 	for _, info := range in.Infos {
 		err := checkFeildsInCoinDesc(info)
 		if err != nil {
@@ -126,8 +132,14 @@ func (s *Server) CreateCoinDescriptions(ctx context.Context, in *npool.CreateCoi
 }
 
 func (s *Server) CreateAppCoinDescription(ctx context.Context, in *npool.CreateAppCoinDescriptionRequest) (*npool.CreateAppCoinDescriptionResponse, error) {
+	_, err := uuid.Parse(in.GetTargetAppID())
+	if err != nil {
+		logger.Sugar().Errorf("parse TargetAppID: %s invalid", in.GetTargetAppID())
+		return nil, status.Error(codes.InvalidArgument, "TargetAppID invalid")
+	}
+
 	info := in.GetInfo()
-	err := checkFeildsInCoinDesc(info)
+	err = checkFeildsInCoinDesc(info)
 	if err != nil {
 		return nil, err
 	}
@@ -158,6 +170,12 @@ func (s *Server) CreateAppCoinDescription(ctx context.Context, in *npool.CreateA
 }
 
 func (s *Server) CreateAppCoinDescriptions(ctx context.Context, in *npool.CreateAppCoinDescriptionsRequest) (*npool.CreateAppCoinDescriptionsResponse, error) {
+	_, err := uuid.Parse(in.GetTargetAppID())
+	if err != nil {
+		logger.Sugar().Errorf("parse TargetAppID: %s invalid", in.GetTargetAppID())
+		return nil, status.Error(codes.InvalidArgument, "TargetAppID invalid")
+	}
+
 	for _, info := range in.Infos {
 		err := checkFeildsInCoinDesc(info)
 		if err != nil {
@@ -350,33 +368,6 @@ func (s *Server) GetCoinDescriptionOnly(ctx context.Context, in *npool.GetCoinDe
 	}
 
 	return &npool.GetCoinDescriptionOnlyResponse{
-		Info: info,
-	}, nil
-}
-
-func (s *Server) GetAppCoinDescription(ctx context.Context, in *npool.GetAppCoinDescriptionRequest) (*npool.GetAppCoinDescriptionResponse, error) {
-	_, err := uuid.Parse(in.GetID())
-	if err != nil {
-		logger.Sugar().Errorf("parse ID: %s invalid", in.GetID())
-		return nil, status.Error(codes.InvalidArgument, "ID invalid")
-	}
-
-	ctx, cancel := context.WithTimeout(ctx, ccoin.GrpcTimeout)
-	defer cancel()
-
-	schema, err := crud.New(ctx, nil)
-	if err != nil {
-		logger.Sugar().Errorf("fail create schema entity: %v", err)
-		return &npool.GetAppCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	info, err := schema.Row(ctx, uuid.MustParse(in.GetID()))
-	if err != nil {
-		logger.Sugar().Errorf("fail get CoinDescription: %v", err)
-		return &npool.GetAppCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.GetAppCoinDescriptionResponse{
 		Info: info,
 	}, nil
 }
