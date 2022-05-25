@@ -24,7 +24,7 @@ spec:
           - path: /api/project-info-manager
             backend:
               serviceName: project-info-manager
-              servicePort: 50319
+              servicePort: 50310
     - host: api.procyon.vip
       http: *http_rules
     - host: api.xpool.top
