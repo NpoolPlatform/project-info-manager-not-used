@@ -152,13 +152,9 @@ func (s *Server) CreateAppCoinDescription(ctx context.Context, in *npool.CreateA
 		return &npool.CreateAppCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	desc, err := schema.Create(ctx, &npool.CoinDescription{
-		CoinTypeID: info.GetCoinTypeID(),
-		AppID:      info.GetAppID(),
-		Title:      info.GetTitle(),
-		Message:    info.GetMessage(),
-		UsedFor:    info.GetUsedFor(),
-	})
+	info.AppID = in.GetTargetAppID()
+
+	desc, err := schema.Create(ctx, info)
 	if err != nil {
 		logger.Sugar().Errorf("fail create CoinDescription error %v", err)
 		return &npool.CreateAppCoinDescriptionResponse{}, status.Error(codes.Internal, "internal server error")

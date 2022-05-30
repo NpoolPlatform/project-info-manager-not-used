@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/mixin"
 	"github.com/google/uuid"
@@ -34,8 +35,7 @@ func (CoinDescription) Fields() []ent.Field {
 
 func (CoinDescription) Indexes() []ent.Index {
 	return []ent.Index{
-		// have no index
-		// index.Fields().
-		// 	Unique(),
+		index.Fields("app_id", "coin_type_id", "used_for").
+			Unique(),
 	}
 }
