@@ -76,9 +76,6 @@ func TestCreate(t *testing.T) {
 		assert.NotEqual(t, infos[1].ID, uuid.UUID{}.String())
 	}
 
-	schema, err = New(context.Background(), nil)
-	assert.Nil(t, err)
-
 	description.ID = info.ID
 	description.Message = "update message"
 	schema, err = New(context.Background(), nil)
