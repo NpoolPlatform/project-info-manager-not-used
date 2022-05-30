@@ -20,7 +20,7 @@ func do(ctx context.Context, fn func(_ctx context.Context, cli npool.ProjectInfo
 
 	conn, err := grpc2.GetGRPCConn(constant.ServiceName, grpc2.GRPCTAG)
 	if err != nil {
-		return nil, fmt.Errorf("fail get service template connection: %v", err)
+		return nil, fmt.Errorf("fail get project info manager connection: %v", err)
 	}
 	defer conn.Close()
 
