@@ -51,7 +51,7 @@ func init() {
 	}
 }
 
-func TestCreate(t *testing.T) {
+func TestCRUD(t *testing.T) { //nolint
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
