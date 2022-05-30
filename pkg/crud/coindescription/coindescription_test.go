@@ -75,22 +75,10 @@ func TestCreate(t *testing.T) {
 		assert.NotEqual(t, infos[0].ID, uuid.UUID{}.String())
 		assert.NotEqual(t, infos[1].ID, uuid.UUID{}.String())
 	}
-}
 
-func TestUpdate(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	schema, err := New(context.Background(), nil)
+	schema, err = New(context.Background(), nil)
 	assert.Nil(t, err)
 
-	info, err := schema.Create(context.Background(), &description)
-	if assert.Nil(t, err) {
-		if assert.NotEqual(t, info.ID, uuid.UUID{}.String()) {
-			description.ID = info.ID
-		}
-		assert.Equal(t, info, &description)
-	}
 	description.ID = info.ID
 	description.Message = "update message"
 	schema, err = New(context.Background(), nil)
@@ -98,22 +86,6 @@ func TestUpdate(t *testing.T) {
 
 	info, err = schema.Update(context.Background(), &description)
 	if assert.Nil(t, err) {
-		assert.Equal(t, info, &description)
-	}
-}
-
-func TestGet(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	schema, err := New(context.Background(), nil)
-	assert.Nil(t, err)
-
-	info, err := schema.Create(context.Background(), &description)
-	if assert.Nil(t, err) {
-		if assert.NotEqual(t, info.ID, uuid.UUID{}.String()) {
-			description.ID = info.ID
-		}
 		assert.Equal(t, info, &description)
 	}
 
@@ -144,22 +116,6 @@ func TestGet(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, &description)
 	}
-}
-
-func TestCount(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	schema, err := New(context.Background(), nil)
-	assert.Nil(t, err)
-
-	info, err := schema.Create(context.Background(), &description)
-	if assert.Nil(t, err) {
-		if assert.NotEqual(t, info.ID, uuid.UUID{}.String()) {
-			description.ID = info.ID
-		}
-		assert.Equal(t, info, &description)
-	}
 
 	schema, err = New(context.Background(), nil)
 	assert.Nil(t, err)
@@ -169,22 +125,6 @@ func TestCount(t *testing.T) {
 	)
 	if assert.Nil(t, err) {
 		assert.Equal(t, count, uint32(1))
-	}
-}
-
-func TestDelete(t *testing.T) {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	schema, err := New(context.Background(), nil)
-	assert.Nil(t, err)
-
-	info, err := schema.Create(context.Background(), &description)
-	if assert.Nil(t, err) {
-		if assert.NotEqual(t, info.ID, uuid.UUID{}.String()) {
-			description.ID = info.ID
-		}
-		assert.Equal(t, info, &description)
 	}
 
 	schema, err = New(context.Background(), nil)
@@ -198,7 +138,7 @@ func TestDelete(t *testing.T) {
 	schema, err = New(context.Background(), nil)
 	assert.Nil(t, err)
 
-	count, err := schema.Count(context.Background(),
+	count, err = schema.Count(context.Background(),
 		cruder.NewConds().WithCond(constant.FieldID, cruder.EQ, info.ID),
 	)
 	if assert.Nil(t, err) {

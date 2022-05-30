@@ -1,6 +1,7 @@
 //nolint
 package api
 
+/*
 import (
 	"encoding/json"
 	"fmt"
@@ -328,3 +329,4 @@ func TestDeleteAppCoinDescription(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, getInfos.GetTotal(), int32(0))
 }
+*/
