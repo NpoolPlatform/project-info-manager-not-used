@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
+	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coinproductinfo"
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/schema"
 	"github.com/google/uuid"
 
@@ -53,6 +54,38 @@ func init() {
 	coindescriptionDescID := coindescriptionFields[0].Descriptor()
 	// coindescription.DefaultID holds the default value on creation for the id field.
 	coindescription.DefaultID = coindescriptionDescID.Default.(func() uuid.UUID)
+	coinproductinfoMixin := schema.CoinProductInfo{}.Mixin()
+	coinproductinfo.Policy = privacy.NewPolicies(coinproductinfoMixin[0], schema.CoinProductInfo{})
+	coinproductinfo.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := coinproductinfo.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	coinproductinfoMixinFields0 := coinproductinfoMixin[0].Fields()
+	_ = coinproductinfoMixinFields0
+	coinproductinfoFields := schema.CoinProductInfo{}.Fields()
+	_ = coinproductinfoFields
+	// coinproductinfoDescCreateAt is the schema descriptor for create_at field.
+	coinproductinfoDescCreateAt := coinproductinfoMixinFields0[0].Descriptor()
+	// coinproductinfo.DefaultCreateAt holds the default value on creation for the create_at field.
+	coinproductinfo.DefaultCreateAt = coinproductinfoDescCreateAt.Default.(func() uint32)
+	// coinproductinfoDescUpdateAt is the schema descriptor for update_at field.
+	coinproductinfoDescUpdateAt := coinproductinfoMixinFields0[1].Descriptor()
+	// coinproductinfo.DefaultUpdateAt holds the default value on creation for the update_at field.
+	coinproductinfo.DefaultUpdateAt = coinproductinfoDescUpdateAt.Default.(func() uint32)
+	// coinproductinfo.UpdateDefaultUpdateAt holds the default value on update for the update_at field.
+	coinproductinfo.UpdateDefaultUpdateAt = coinproductinfoDescUpdateAt.UpdateDefault.(func() uint32)
+	// coinproductinfoDescDeleteAt is the schema descriptor for delete_at field.
+	coinproductinfoDescDeleteAt := coinproductinfoMixinFields0[2].Descriptor()
+	// coinproductinfo.DefaultDeleteAt holds the default value on creation for the delete_at field.
+	coinproductinfo.DefaultDeleteAt = coinproductinfoDescDeleteAt.Default.(func() uint32)
+	// coinproductinfoDescID is the schema descriptor for id field.
+	coinproductinfoDescID := coinproductinfoFields[0].Descriptor()
+	// coinproductinfo.DefaultID holds the default value on creation for the id field.
+	coinproductinfo.DefaultID = coinproductinfoDescID.Default.(func() uuid.UUID)
 }
 
 const (

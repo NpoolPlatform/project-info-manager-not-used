@@ -33,9 +33,33 @@ var (
 			},
 		},
 	}
+	// CoinProductInfosColumns holds the columns for the "coin_product_infos" table.
+	CoinProductInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "create_at", Type: field.TypeUint32},
+		{Name: "update_at", Type: field.TypeUint32},
+		{Name: "delete_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID},
+		{Name: "coin_type_id", Type: field.TypeUUID},
+		{Name: "product_page", Type: field.TypeString},
+	}
+	// CoinProductInfosTable holds the schema information for the "coin_product_infos" table.
+	CoinProductInfosTable = &schema.Table{
+		Name:       "coin_product_infos",
+		Columns:    CoinProductInfosColumns,
+		PrimaryKey: []*schema.Column{CoinProductInfosColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "coinproductinfo_app_id_coin_type_id",
+				Unique:  true,
+				Columns: []*schema.Column{CoinProductInfosColumns[4], CoinProductInfosColumns[5]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CoinDescriptionsTable,
+		CoinProductInfosTable,
 	}
 )
 
