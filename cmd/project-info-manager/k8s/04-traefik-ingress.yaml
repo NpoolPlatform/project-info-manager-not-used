@@ -21,23 +21,7 @@ spec:
     - host: api.npool.top
       http: &http_rules
         paths:
-          - path: /api/project-info-manager/v1/get/coin/description
-            backend:
-              serviceName: project-info-manager
-              servicePort: 50310
-          - path: /api/project-info-manager/v1/get/coin/descriptions
-            backend:
-              serviceName: project-info-manager
-              servicePort: 50310
-          - path: /api/project-info-manager/v1/get/coin/description/only
-            backend:
-              serviceName: project-info-manager
-              servicePort: 50310
-          - path: /api/project-info-manager/v1/get/app/coin/descriptions
-            backend:
-              serviceName: project-info-manager
-              servicePort: 50310
-          - path: /api/project-info-manager/v1/get/app/coin/description/only
+          - path: /api/project-info-manager/v1/get/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
@@ -73,23 +57,19 @@ spec:
     - host: api.npool.top
       http: &http_rules
         paths:
-          - path: /api/project-info-manager/v1/create/coin/description
+          - path: /api/project-info-manager/v1/create/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
-          - path: /api/project-info-manager/v1/create/coin/descriptions
+          - path: /api/project-info-manager/v1/create/app/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
-          - path: /api/project-info-manager/v1/create/app/coin/description
+          - path: /api/project-info-manager/v1/update/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
-          - path: /api/project-info-manager/v1/create/app/coin/descriptions
-            backend:
-              serviceName: project-info-manager
-              servicePort: 50310
-          - path: /api/project-info-manager/v1/update/coin/description
+          - path: /api/project-info-manager/v1/get/app/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
