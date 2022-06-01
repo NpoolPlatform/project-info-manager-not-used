@@ -21,10 +21,15 @@ spec:
     - host: api.npool.top
       http: &http_rules
         paths:
+          - path: /api/project-info-manager/version
+            backend:
+              serviceName: project-info-manager
+              servicePort: 50310
           - path: /api/project-info-manager/v1/get/coin
             backend:
               serviceName: project-info-manager
               servicePort: 50310
+          
     - host: api.procyon.vip
       http: *http_rules
     - host: api.xpool.top
