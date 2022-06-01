@@ -4,6 +4,7 @@ package ent
 
 import (
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
+	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coinproductinfo"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -13,7 +14,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   coindescription.Table,
@@ -33,6 +34,25 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coindescription.FieldTitle:      {Type: field.TypeString, Column: coindescription.FieldTitle},
 			coindescription.FieldMessage:    {Type: field.TypeString, Column: coindescription.FieldMessage},
 			coindescription.FieldUsedFor:    {Type: field.TypeString, Column: coindescription.FieldUsedFor},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   coinproductinfo.Table,
+			Columns: coinproductinfo.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: coinproductinfo.FieldID,
+			},
+		},
+		Type: "CoinProductInfo",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			coinproductinfo.FieldCreateAt:    {Type: field.TypeUint32, Column: coinproductinfo.FieldCreateAt},
+			coinproductinfo.FieldUpdateAt:    {Type: field.TypeUint32, Column: coinproductinfo.FieldUpdateAt},
+			coinproductinfo.FieldDeleteAt:    {Type: field.TypeUint32, Column: coinproductinfo.FieldDeleteAt},
+			coinproductinfo.FieldAppID:       {Type: field.TypeUUID, Column: coinproductinfo.FieldAppID},
+			coinproductinfo.FieldCoinTypeID:  {Type: field.TypeUUID, Column: coinproductinfo.FieldCoinTypeID},
+			coinproductinfo.FieldProductPage: {Type: field.TypeString, Column: coinproductinfo.FieldProductPage},
 		},
 	}
 	return graph
@@ -121,4 +141,73 @@ func (f *CoinDescriptionFilter) WhereMessage(p entql.StringP) {
 // WhereUsedFor applies the entql string predicate on the used_for field.
 func (f *CoinDescriptionFilter) WhereUsedFor(p entql.StringP) {
 	f.Where(p.Field(coindescription.FieldUsedFor))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (cpiq *CoinProductInfoQuery) addPredicate(pred func(s *sql.Selector)) {
+	cpiq.predicates = append(cpiq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the CoinProductInfoQuery builder.
+func (cpiq *CoinProductInfoQuery) Filter() *CoinProductInfoFilter {
+	return &CoinProductInfoFilter{cpiq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *CoinProductInfoMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the CoinProductInfoMutation builder.
+func (m *CoinProductInfoMutation) Filter() *CoinProductInfoFilter {
+	return &CoinProductInfoFilter{m}
+}
+
+// CoinProductInfoFilter provides a generic filtering capability at runtime for CoinProductInfoQuery.
+type CoinProductInfoFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *CoinProductInfoFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *CoinProductInfoFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(coinproductinfo.FieldID))
+}
+
+// WhereCreateAt applies the entql uint32 predicate on the create_at field.
+func (f *CoinProductInfoFilter) WhereCreateAt(p entql.Uint32P) {
+	f.Where(p.Field(coinproductinfo.FieldCreateAt))
+}
+
+// WhereUpdateAt applies the entql uint32 predicate on the update_at field.
+func (f *CoinProductInfoFilter) WhereUpdateAt(p entql.Uint32P) {
+	f.Where(p.Field(coinproductinfo.FieldUpdateAt))
+}
+
+// WhereDeleteAt applies the entql uint32 predicate on the delete_at field.
+func (f *CoinProductInfoFilter) WhereDeleteAt(p entql.Uint32P) {
+	f.Where(p.Field(coinproductinfo.FieldDeleteAt))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *CoinProductInfoFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(coinproductinfo.FieldAppID))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *CoinProductInfoFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(coinproductinfo.FieldCoinTypeID))
+}
+
+// WhereProductPage applies the entql string predicate on the product_page field.
+func (f *CoinProductInfoFilter) WhereProductPage(p entql.StringP) {
+	f.Where(p.Field(coinproductinfo.FieldProductPage))
 }

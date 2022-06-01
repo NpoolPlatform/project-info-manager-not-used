@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coindescription"
+	"github.com/NpoolPlatform/project-info-manager/pkg/db/ent/coinproductinfo"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -23,6 +24,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// CoinDescription is the client for interacting with the CoinDescription builders.
 	CoinDescription *CoinDescriptionClient
+	// CoinProductInfo is the client for interacting with the CoinProductInfo builders.
+	CoinProductInfo *CoinProductInfoClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -37,6 +40,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.CoinDescription = NewCoinDescriptionClient(c.config)
+	c.CoinProductInfo = NewCoinProductInfoClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -71,6 +75,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:             ctx,
 		config:          cfg,
 		CoinDescription: NewCoinDescriptionClient(cfg),
+		CoinProductInfo: NewCoinProductInfoClient(cfg),
 	}, nil
 }
 
@@ -91,6 +96,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:             ctx,
 		config:          cfg,
 		CoinDescription: NewCoinDescriptionClient(cfg),
+		CoinProductInfo: NewCoinProductInfoClient(cfg),
 	}, nil
 }
 
@@ -121,6 +127,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.CoinDescription.Use(hooks...)
+	c.CoinProductInfo.Use(hooks...)
 }
 
 // CoinDescriptionClient is a client for the CoinDescription schema.
@@ -212,4 +219,95 @@ func (c *CoinDescriptionClient) GetX(ctx context.Context, id uuid.UUID) *CoinDes
 func (c *CoinDescriptionClient) Hooks() []Hook {
 	hooks := c.hooks.CoinDescription
 	return append(hooks[:len(hooks):len(hooks)], coindescription.Hooks[:]...)
+}
+
+// CoinProductInfoClient is a client for the CoinProductInfo schema.
+type CoinProductInfoClient struct {
+	config
+}
+
+// NewCoinProductInfoClient returns a client for the CoinProductInfo from the given config.
+func NewCoinProductInfoClient(c config) *CoinProductInfoClient {
+	return &CoinProductInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coinproductinfo.Hooks(f(g(h())))`.
+func (c *CoinProductInfoClient) Use(hooks ...Hook) {
+	c.hooks.CoinProductInfo = append(c.hooks.CoinProductInfo, hooks...)
+}
+
+// Create returns a create builder for CoinProductInfo.
+func (c *CoinProductInfoClient) Create() *CoinProductInfoCreate {
+	mutation := newCoinProductInfoMutation(c.config, OpCreate)
+	return &CoinProductInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CoinProductInfo entities.
+func (c *CoinProductInfoClient) CreateBulk(builders ...*CoinProductInfoCreate) *CoinProductInfoCreateBulk {
+	return &CoinProductInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CoinProductInfo.
+func (c *CoinProductInfoClient) Update() *CoinProductInfoUpdate {
+	mutation := newCoinProductInfoMutation(c.config, OpUpdate)
+	return &CoinProductInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CoinProductInfoClient) UpdateOne(cpi *CoinProductInfo) *CoinProductInfoUpdateOne {
+	mutation := newCoinProductInfoMutation(c.config, OpUpdateOne, withCoinProductInfo(cpi))
+	return &CoinProductInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CoinProductInfoClient) UpdateOneID(id uuid.UUID) *CoinProductInfoUpdateOne {
+	mutation := newCoinProductInfoMutation(c.config, OpUpdateOne, withCoinProductInfoID(id))
+	return &CoinProductInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CoinProductInfo.
+func (c *CoinProductInfoClient) Delete() *CoinProductInfoDelete {
+	mutation := newCoinProductInfoMutation(c.config, OpDelete)
+	return &CoinProductInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CoinProductInfoClient) DeleteOne(cpi *CoinProductInfo) *CoinProductInfoDeleteOne {
+	return c.DeleteOneID(cpi.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CoinProductInfoClient) DeleteOneID(id uuid.UUID) *CoinProductInfoDeleteOne {
+	builder := c.Delete().Where(coinproductinfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CoinProductInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for CoinProductInfo.
+func (c *CoinProductInfoClient) Query() *CoinProductInfoQuery {
+	return &CoinProductInfoQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a CoinProductInfo entity by its id.
+func (c *CoinProductInfoClient) Get(ctx context.Context, id uuid.UUID) (*CoinProductInfo, error) {
+	return c.Query().Where(coinproductinfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CoinProductInfoClient) GetX(ctx context.Context, id uuid.UUID) *CoinProductInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CoinProductInfoClient) Hooks() []Hook {
+	hooks := c.hooks.CoinProductInfo
+	return append(hooks[:len(hooks):len(hooks)], coinproductinfo.Hooks[:]...)
 }

@@ -22,6 +22,19 @@ func (f CoinDescriptionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 	return f(ctx, mv)
 }
 
+// The CoinProductInfoFunc type is an adapter to allow the use of ordinary
+// function as CoinProductInfo mutator.
+type CoinProductInfoFunc func(context.Context, *ent.CoinProductInfoMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CoinProductInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CoinProductInfoMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CoinProductInfoMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 
