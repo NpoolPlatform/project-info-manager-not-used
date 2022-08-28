@@ -3,9 +3,6 @@ package main
 import (
 	"github.com/NpoolPlatform/project-info-manager/api"
 	db "github.com/NpoolPlatform/project-info-manager/pkg/db"
-	msgcli "github.com/NpoolPlatform/project-info-manager/pkg/message/client"
-	msglistener "github.com/NpoolPlatform/project-info-manager/pkg/message/listener"
-	msgsrv "github.com/NpoolPlatform/project-info-manager/pkg/message/server"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
@@ -34,15 +31,6 @@ var runCmd = &cli.Command{
 			}
 		}()
 
-		if err := msgsrv.Init(); err != nil {
-			return err
-		}
-		if err := msgcli.Init(); err != nil {
-			return err
-		}
-
-		go msglistener.Listen()
-
 		return grpc2.RunGRPCGateWay(rpcGatewayRegister)
 	},
 }
@@ -61,7 +49,7 @@ func rpcGatewayRegister(mux *runtime.ServeMux, endpoint string, opts []grpc.Dial
 		return err
 	}
 
-	apimgrcli.Register(mux)
+	apimgrcli.Register(mux) //nolint
 
 	return nil
 }
