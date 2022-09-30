@@ -29,7 +29,7 @@ spec:
             backend:
               serviceName: project-info-manager
               servicePort: 50310
-          
+
     - host: api.procyon.vip
       http: *http_rules
     - host: api.xpool.top
@@ -47,6 +47,8 @@ spec:
     - host: api.singapore-testing.npool.top
       http: *http_rules
     - host: api.procyon.xpool.top
+      http: *http_rules
+    - host: api.lpsecretbase.com
       http: *http_rules
 
 ---
@@ -106,4 +108,6 @@ spec:
     - host: api.singapore-testing.npool.top
       http: *http_rules
     - host: api.procyon.xpool.top
+      http: *http_rules
+    - host: api.lpsecretbase.com
       http: *http_rules
